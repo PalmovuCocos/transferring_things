@@ -1,7 +1,7 @@
 from django.urls import path
-from .views import index
 
+from bulletin_board.views import AnnouncementAPIView
 
 urlpatterns = [
-    path('index/', index),
+    path('api/v1/announcement', AnnouncementAPIView.as_view()),
 ]
