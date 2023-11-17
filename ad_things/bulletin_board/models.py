@@ -9,14 +9,26 @@ class Announcement(models.Model):
     description = models.TextField(max_length=180, verbose_name='Описание')
     photo = models.ImageField(upload_to="photos/%Y/%m/%d/", verbose_name='Фото')
 
+    class Meta:
+        verbose_name_plural = 'Объявления'
+        verbose_name = 'Объявление'
+
 
 class Category(models.Model):
     category_name = models.CharField(max_length=30, verbose_name='Название категории')
+
+    class Meta:
+        verbose_name_plural = 'Категории'
+        verbose_name = 'Категория'
 
 
 class Application(models.Model):
     applicant = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name='Заявитель')
     comment = models.TextField(max_length=180, verbose_name='Комментарий')
+
+    class Meta:
+        verbose_name_plural = 'Заявки'
+        verbose_name = 'Заявка'
 
 
 class Comment(models.Model):
@@ -24,3 +36,7 @@ class Comment(models.Model):
     content = models.TextField(max_length=120, verbose_name='Содержимое')
     like = models.PositiveIntegerField(verbose_name='Нравится')
     dislike = models.PositiveIntegerField(verbose_name='Не нравится')
+
+    class Meta:
+        verbose_name_plural = 'Комментарии'
+        verbose_name = 'Комментарий'

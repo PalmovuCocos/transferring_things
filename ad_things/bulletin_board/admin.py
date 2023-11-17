@@ -8,4 +8,19 @@ class AnnouncementAdmin(admin.ModelAdmin):
     search_fields = ('category', 'name_thing')
 
 
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ('id', 'category_name')
+
+
+class ApplicationAdmin(admin.ModelAdmin):
+    list_display = ('id', 'applicant', 'comment')
+
+
+class CommentAdmin(admin.ModelAdmin):
+    list_display = ('id', 'commentator', 'content', 'like', 'dislike')
+
+
 admin.site.register(Announcement, AnnouncementAdmin)
+admin.site.register(Category, CategoryAdmin)
+admin.site.register(Application, ApplicationAdmin)
+admin.site.register(Comment, CommentAdmin)
