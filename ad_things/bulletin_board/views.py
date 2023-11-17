@@ -8,6 +8,7 @@ class AnnouncementAPIView(generics.ListCreateAPIView):
     serializer_class = AnnouncementSerializer
 
 
+
 class CategoryAPIView(generics.ListAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
