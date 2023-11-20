@@ -6,7 +6,7 @@ urlpatterns = [
     path('api/announcement', AnnouncementAPIView.as_view()),
     path('api/announcement_category/<int:category>/', CategoryAPIView.as_view()),
 
-    path('api/announcement/<int:pk>', RetrieveAnnouncementAPI.as_view()),
+    path('api/retrieve_announcement/<int:pk>', RetrieveAnnouncementAPI.as_view()),
 
     path('api/announcement_comment/<int:pk>', CommentAPIView.as_view()),
 

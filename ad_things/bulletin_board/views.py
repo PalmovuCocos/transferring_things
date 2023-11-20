@@ -9,12 +9,19 @@ from .permissions import IsAuthenticatedOrReadOnly, IsCurrentUser, IsCurrentUser
 
 
 class AnnouncementAPIView(generics.ListCreateAPIView):
+    """
+    Вывод всех объявлений и создание объявления
+    """
     queryset = Announcement.objects.all()
     serializer_class = AnnouncementSerializer
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
 
 class CategoryAPIView(APIView):
+    """
+    Вывод всех объявлений по категориям,
+    если пользователь авторизован, то можно создавать новые с данной категорией
+    """
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
     def get(self, request, category):
@@ -27,15 +34,20 @@ class CategoryAPIView(APIView):
         return Response({'post': CategorySerializer(post_new).data})
 
 
-# Вывод одной записи Announcement. Если пользователь - создатель записи, то можно изменять и удалять
 class RetrieveAnnouncementAPI(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Вывод одной записи Announcement.
+    Если пользователь - создатель записи, то можно изменять и удалять
+    """
     queryset = Announcement.objects.all()
     serializer_class = AnnouncementSerializer
     permission_classes = (IsCurrentUserOrReadOnly,)
 
 
-# для вывода ВСЕХ коментариев отдельного объявления и создания для данного объявления
 class CommentAPIView(APIView):
+    """
+    Вывод всех комментариев и создание комментариев для отдельного объявления
+    """
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
     def get(self, request, pk):
@@ -50,15 +62,21 @@ class CommentAPIView(APIView):
         return Response({'post': CommentSerializer(new_comment).data})
 
 
-# вывод отдельного комментария. Если создатель комментария, то + изменение, удаление
 class RetrieveCommentAPI(generics.RetrieveUpdateDestroyAPIView):
+    """
+    вывод отдельного комментария, а также
+    изменение и удаление если создатель комментария текущий пользователь
+    """
+
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
     permission_classes = (IsCurrentUserOrReadOnly,)
 
 
-# вывод списка заявлений у определенного объявления
 class ApplicationAPIView(APIView):
+    """
+    вывод списка заявлений у определенного объявления
+    """
     permission_classes = (IsCurrentUser,)
 
     def get(self, request, pk_ann):
@@ -67,8 +85,10 @@ class ApplicationAPIView(APIView):
         return Response(serializer.data)
 
 
-# создание нового заявления
 class CreateApplicationAPIView(APIView):
+    """
+    создание нового заявления
+    """
 
     def post(self, request, pk_ann):
         new_application = Application.objects.create(comment=request.data['comment'],
@@ -77,8 +97,10 @@ class CreateApplicationAPIView(APIView):
         return Response({'post': ApplicationSerializer(new_application).data})
 
 
-# изменение статуса заявления создателем объявления
 class ConfirmApplicationAPIView(generics.UpdateAPIView):
+    """
+    изменение статуса заявления создателем объявления
+    """
     queryset = Application.objects.all()
     serializer_class = ApplicationSerializer
     permission_classes = (IsCurrentUser,)
@@ -96,6 +118,9 @@ class ConfirmApplicationAPIView(generics.UpdateAPIView):
 
 
 class RegisterAPI(generics.GenericAPIView):
+    """
+    Регистрация пользователя
+    """
     serializer_class = RegisterSerializer
 
     def post(self, request, *args,  **kwargs):
