@@ -17,21 +17,27 @@ class AnnouncementAPIView(generics.ListCreateAPIView):
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
 
-class CategoryAPIView(APIView):
+class CreateCategoryAPIView(generics.ListCreateAPIView):
+    """
+    Вывод и создание категорий для авторизированных пользователей
+    """
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    permission_classes = (IsAuthenticatedOrReadOnly, )
+
+
+class AnnouncementCategoryAPIView(generics.ListAPIView):
     """
     Вывод всех объявлений по категориям,
     если пользователь авторизован, то можно создавать новые с данной категорией
     """
     permission_classes = (IsAuthenticatedOrReadOnly,)
+    serializer_class = AnnouncementSerializer
 
     def get(self, request, category):
         queryset = Announcement.objects.filter(category=category)
-        serializer = AnnouncementSerializer(queryset, many=True)
+        serializer = self.get_serializer(instance=queryset, many=True)
         return Response(serializer.data)
-
-    def post(self, request):
-        post_new = Category.objects.create(category_name=request.data['category_name'])
-        return Response({'post': CategorySerializer(post_new).data})
 
 
 class RetrieveAnnouncementAPI(generics.RetrieveUpdateDestroyAPIView):
