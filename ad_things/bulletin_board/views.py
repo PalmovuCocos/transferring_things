@@ -49,16 +49,25 @@ class RetrieveAnnouncementAPI(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (IsCurrentUserOrReadOnly,)
 
 
-class CommentAPIView(APIView):
+class CommentAPIView(generics.ListCreateAPIView):
     """
     Вывод всех комментариев и создание комментариев для отдельного объявления
     """
     permission_classes = (IsAuthenticatedOrReadOnly,)
+    serializer_class = CommentSerializer
 
-    def get(self, request, pk):
-        queryset = Comment.objects.filter(ad=pk)
-        serializer = CommentSerializer(queryset, many=True)
-        return Response(serializer.data)
+    def get_queryset(self):
+        ad = self.kwargs['pk']
+        print('aaa')
+        return Comment.objects.filter(ad=ad)
+
+    # def perform_create(self, serializer):
+    #     ad_id = self.kwargs['pk']
+    #     print('aaa', self.request.data, ad_id, self.request.user.id, sep='\n')
+    #     serializer.save(content=self.request.data,
+    #                     ad_id=ad_id,
+    #                     commentator_id=self.request.user.id
+    #                     )
 
     def post(self, request, pk):
         new_comment = Comment.objects.create(content=request.data['content'],
