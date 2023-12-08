@@ -5,8 +5,6 @@ from django.core.mail import send_mail
 
 
 class AnnouncementSerializer(serializers.ModelSerializer):
-    announcer = serializers.HiddenField(default=serializers.CurrentUserDefault())
-
     class Meta:
         model = Announcement
         fields = "__all__"
