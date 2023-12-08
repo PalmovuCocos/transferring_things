@@ -63,10 +63,9 @@ class CommentAPIView(generics.ListCreateAPIView):
 
     # def perform_create(self, serializer):
     #     ad_id = self.kwargs['pk']
-    #     print('aaa', self.request.data, ad_id, self.request.user.id, sep='\n')
-    #     serializer.save(content=self.request.data,
-    #                     ad_id=ad_id,
-    #                     commentator_id=self.request.user.id
+    #     print('aaa', self.request.data, ad_id, self.request.user.id, '\n\n', sep='\n')
+    #     serializer.save(ad=ad_id,
+    #                     commentator=self.request.user.id
     #                     )
 
     def post(self, request, pk):
@@ -81,22 +80,21 @@ class RetrieveCommentAPI(generics.RetrieveUpdateDestroyAPIView):
     вывод отдельного комментария, а также
     изменение и удаление если создатель комментария текущий пользователь
     """
-
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
     permission_classes = (IsCurrentUserOrReadOnly,)
 
 
-class ApplicationAPIView(APIView):
+class ApplicationAPIView(generics.ListAPIView):
     """
     вывод списка заявлений у определенного объявления
     """
     permission_classes = (IsCurrentUser,)
+    serializer_class = ApplicationSerializer
 
-    def get(self, request, pk_ann):
-        queryset = Application.objects.filter(ad_id=pk_ann)
-        serializer = ApplicationSerializer(queryset, many=True)
-        return Response(serializer.data)
+    def get_queryset(self):
+        pk_ann = self.kwargs['pk_ann']
+        return Application.objects.filter(ad_id=pk_ann)
 
 
 class CreateApplicationAPIView(APIView):
