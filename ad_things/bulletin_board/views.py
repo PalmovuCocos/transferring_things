@@ -34,10 +34,9 @@ class AnnouncementCategoryAPIView(generics.ListAPIView):
     permission_classes = (IsAuthenticatedOrReadOnly,)
     serializer_class = AnnouncementSerializer
 
-    def get(self, request, category):
-        queryset = Announcement.objects.filter(category=category)
-        serializer = self.get_serializer(instance=queryset, many=True)
-        return Response(serializer.data)
+    def get_queryset(self):
+        category = self.kwargs['category']
+        return Announcement.objects.filter(category=category)
 
 
 class RetrieveAnnouncementAPI(generics.RetrieveUpdateDestroyAPIView):
