@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-+2mb+$as3r=i+uu0=p$f6)&qge2#)cjfd=3q&xoccfjdw*_m@h
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0']
 
 
 # Application definition
@@ -80,10 +80,10 @@ WSGI_APPLICATION = 'ad_things.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'transferring_things',
-        'USER': 'postgres',
-        'PASSWORD': '4221',
-        'HOST': '127.0.0.1',
+        'NAME': os.environ.get('POSTGRES_NAME'),
+        'USER': os.environ.get('POSTGRES_USER'),
+        'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
+        'HOST': 'pgdb',
         'PORT': '5432',
     }
 }
