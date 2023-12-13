@@ -1,5 +1,5 @@
 # создание образа на основе python
-FROM python:3.9.13
+FROM python:3.11
 
 # установка виртуальных переменных
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -10,12 +10,18 @@ WORKDIR /usr/src/transferring_things/ad_things
 
 # выполнение команды
 RUN pip install --upgrade pip
+RUN pip install pipenv
 # копирование и установка requirements
-COPY ./requirements.txt /usr/src/
-RUN pip install -r /usr/src/requirements.txt
+COPY ./Pipfile /usr/src/
+COPY ./Pipfile.lock /usr/src
+COPY ./.env /usr/src/transferring_things
+
+ENV PIPENV_VENV_IN_PROJECT=1
+
+RUN cd /usr/src/ && pip install --user --upgrade pipenv
+RUN cd /usr/src/ && pipenv install
+RUN cd /usr/src/ && pipenv install --system
 
 # копирование всего проекта
 COPY ./ad_things /usr/src/transferring_things/ad_things
-#CMD ["python", "manage.py", "migrate"]
-#EXPOSE 8000
-#CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+
