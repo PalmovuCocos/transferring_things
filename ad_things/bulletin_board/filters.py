@@ -1,6 +1,6 @@
 from django_filters.rest_framework import filters, FilterSet
 
-from .models import (Announcement)
+from .models import (Announcement, Comment)
 
 
 class AnnouncementCategoryFilter(FilterSet):
@@ -10,3 +10,11 @@ class AnnouncementCategoryFilter(FilterSet):
     class Meta:
         model = Announcement
         fields = ['category', 'announcer']
+
+
+class CommentFilter(FilterSet):
+    ad = filters.CharFilter()
+
+    class Meta:
+        model = Comment
+        fields = ['ad']

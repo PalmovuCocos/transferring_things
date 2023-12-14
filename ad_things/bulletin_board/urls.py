@@ -9,7 +9,7 @@ urlpatterns = [
 
     path('api/retrieve_announcement/<int:pk>/', RetrieveAnnouncementAPI.as_view()),
 
-    path('api/announcement_comment/<int:pk>/', CommentAPIView.as_view()),
+    path('api/announcement_comment/', CommentAPIView.as_view()),
 
     path('api/retrieve_comment/<int:pk>/', RetrieveCommentAPI.as_view()),
 

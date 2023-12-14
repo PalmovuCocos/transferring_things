@@ -2,7 +2,7 @@ from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .filters import AnnouncementCategoryFilter
+from .filters import AnnouncementCategoryFilter, CommentFilter
 from .models import *
 from .serializers import (AnnouncementSerializer,
                           CommentSerializer,
@@ -46,9 +46,6 @@ class AnnouncementCategoryAPIView(generics.ListAPIView):
     serializer_class = AnnouncementSerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = AnnouncementCategoryFilter
-    # def get_queryset(self):
-    #     category = self.kwargs['category']
-    #     return Announcement.objects.filter(category=category)
 
 
 class RetrieveAnnouncementAPI(generics.RetrieveUpdateDestroyAPIView):
@@ -63,15 +60,14 @@ class RetrieveAnnouncementAPI(generics.RetrieveUpdateDestroyAPIView):
 
 class CommentAPIView(generics.ListCreateAPIView):
     """
-    Вывод всех комментариев и создание комментариев для отдельного объявления
+    Вывод всех комментариев для отдельного объявления (или для всех)
+    и создание комментариев для отдельного объявления
     """
+    queryset = Comment.objects.all()
     permission_classes = (IsAuthenticatedOrReadOnly,)
     serializer_class = CommentSerializer
-
-    def get_queryset(self):
-        ad = self.kwargs['pk']
-        print('aaa')
-        return Comment.objects.filter(ad=ad)
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = CommentFilter
 
     # def perform_create(self, serializer):
     #     ad_id = self.kwargs['pk']
