@@ -2,7 +2,8 @@ from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .filters import AnnouncementCategoryFilter, CommentFilter
+from .filters import AnnouncementCategoryFilter, CommentFilter, \
+    ApplicationFilter
 from .models import *
 from .serializers import (AnnouncementSerializer,
                           CommentSerializer,
@@ -97,12 +98,11 @@ class ApplicationAPIView(generics.ListAPIView):
     """
     вывод списка заявлений у определенного объявления
     """
+    queryset = Application.objects.all()
     permission_classes = (IsCurrentUser,)
     serializer_class = ApplicationSerializer
-
-    def get_queryset(self):
-        pk_ann = self.kwargs['pk_ann']
-        return Application.objects.filter(ad_id=pk_ann)
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = ApplicationFilter
 
 
 class CreateApplicationAPIView(APIView):
@@ -151,5 +151,3 @@ class RegisterAPI(generics.GenericAPIView):
             "user": UserSerializer(user, context=self.get_serializer_context()).data,
             "message": "User Created Successfully.  Now perform Login to get your token",
         })
-
-
