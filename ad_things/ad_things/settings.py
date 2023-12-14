@@ -16,9 +16,9 @@ SECRET_KEY = config("SECRET_KEY", cast=str)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", default=False, cast=bool)
 
-print(config("ALLOWED_HOSTS", default="localhost", cast=Csv()))
-
-ALLOWED_HOSTS = list(config("ALLOWED_HOSTS", default="localhost", cast=Csv()))
+ALLOWED_HOSTS = list(config("DJANGO_ALLOWED_HOSTS",
+                            default="localhost",
+                            cast=Csv()))
 
 # Application definition
 
