@@ -4,7 +4,7 @@ from .views import *
 
 urlpatterns = [
     path('api/announcement/', AnnouncementAPIView.as_view()),
-    path('api/announcement_category/<int:category>/', AnnouncementCategoryAPIView.as_view()),
+    path('api/announcement_category/', AnnouncementCategoryAPIView.as_view()),
     path('api/category/', CreateCategoryAPIView.as_view()),
 
     path('api/retrieve_announcement/<int:pk>/', RetrieveAnnouncementAPI.as_view()),

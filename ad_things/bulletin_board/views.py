@@ -2,10 +2,20 @@ from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from .filters import AnnouncementCategoryFilter
 from .models import *
-from .serializers import AnnouncementSerializer, CommentSerializer, ApplicationSerializer, CategorySerializer, \
-    RegisterSerializer, UserSerializer
-from .permissions import IsAuthenticatedOrReadOnly, IsCurrentUser, IsCurrentUserOrReadOnly
+from .serializers import (AnnouncementSerializer,
+                          CommentSerializer,
+                          ApplicationSerializer,
+                          CategorySerializer,
+                          RegisterSerializer,
+                          UserSerializer)
+
+from .permissions import (IsAuthenticatedOrReadOnly,
+                          IsCurrentUser,
+                          IsCurrentUserOrReadOnly)
+
+from django_filters import rest_framework as filters
 
 
 class AnnouncementAPIView(generics.ListCreateAPIView):
@@ -28,15 +38,17 @@ class CreateCategoryAPIView(generics.ListCreateAPIView):
 
 class AnnouncementCategoryAPIView(generics.ListAPIView):
     """
-    Вывод всех объявлений по категориям,
+    Вывод всех объявлений по категориям (записывать в поисковой строке),
     если пользователь авторизован, то можно создавать новые с данной категорией
     """
+    queryset = Announcement.objects.all()
     permission_classes = (IsAuthenticatedOrReadOnly,)
     serializer_class = AnnouncementSerializer
-
-    def get_queryset(self):
-        category = self.kwargs['category']
-        return Announcement.objects.filter(category=category)
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = AnnouncementCategoryFilter
+    # def get_queryset(self):
+    #     category = self.kwargs['category']
+    #     return Announcement.objects.filter(category=category)
 
 
 class RetrieveAnnouncementAPI(generics.RetrieveUpdateDestroyAPIView):
