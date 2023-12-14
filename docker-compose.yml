@@ -3,7 +3,7 @@ services:
     build: .
     container_name: django
     command: bash -c "python manage.py migrate --noinput &&
-             python manage.py runserver 0.0.0.0:8000"
+             python manage.py runserver 0.0.0.0:8000 --settings=ad_things.settings"
 
     # место куда данные сохраняются за пределами контейнера
     volumes:
@@ -17,7 +17,7 @@ services:
     depends_on:
       - pgdb
     env_file:
-      - ./.env
+      - .env
 
   pgdb:
     image: postgres

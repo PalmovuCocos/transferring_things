@@ -16,9 +16,11 @@ SECRET_KEY = config("SECRET_KEY", cast=str)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", default=False, cast=bool)
 
-ALLOWED_HOSTS = list(config("DJANGO_ALLOWED_HOSTS",
-                            default="localhost",
-                            cast=Csv()))
+ALLOWED_HOSTS = config("DJANGO_ALLOWED_HOSTS",
+                       default="localhost",
+                       cast=Csv())
+
+CORS_ALLOWED_ORIGINS = config("CORS_ALLOWED_ORIGINS", default=[])
 
 # Application definition
 
@@ -33,6 +35,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'drf_yasg',
     'corsheaders',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
@@ -72,13 +75,6 @@ WSGI_APPLICATION = 'ad_things.wsgi.application'
 
 DATABASES = {
     'default': {
-        # 'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        # 'NAME': 'transferring_things',
-        # 'USER': 'dmitry',
-        # 'PASSWORD': '4221',
-        # 'HOST': '127.0.0.1',
-        # 'PORT': '5432',
-
         'ENGINE': config("SQL_ENGINE", default="django.db.backends.sqlite3"),
         'NAME': config("SQL_DATABASE", default=os.path.join(BASE_DIR, "db.sqlite3")),
         'USER': config("SQL_USER", default="user"),
@@ -134,7 +130,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
+    ),
+    'DEFAULT_FILTER_BACKENDS': (
+        'django_filters.rest_framework.DjangoFilterBackend',
+    ),
 }
 
 SIMPLE_JWT = {
