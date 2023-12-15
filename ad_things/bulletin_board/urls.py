@@ -14,7 +14,7 @@ urlpatterns = [
     path('api/retrieve_comment/<int:pk>/', RetrieveCommentAPI.as_view()),
 
     path('api/application/', ApplicationAPIView.as_view()),
-    path('api/create_application/<int:pk_ann>/', CreateApplicationAPIView.as_view()),
+    # path('api/create_application/<int:pk_ann>/', CreateApplicationAPIView.as_view()),
     path('api/confirm_application/<int:pk>/', ConfirmApplicationAPIView.as_view()),
 ]
 

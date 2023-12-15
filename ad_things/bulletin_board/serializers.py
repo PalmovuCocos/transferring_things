@@ -24,10 +24,6 @@ class ApplicationSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     def partial_update(self, instance, validated_data):
-        # instance.applicant = validated_data.get("applicant", instance.applicant)
-        # instance.ad = validated_data.get("ad", instance.ad)
-        # instance.comment = validated_data.get("comment", instance.comment)
-
         instance.response = validated_data.get("response", instance.response)
         instance.save()
         return instance

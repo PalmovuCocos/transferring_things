@@ -1,4 +1,4 @@
-from rest_framework import generics
+from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -70,18 +70,14 @@ class CommentAPIView(generics.ListCreateAPIView):
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = CommentFilter
 
-    # def perform_create(self, serializer):
-    #     ad_id = self.kwargs['pk']
-    #     print('aaa', self.request.data, ad_id, self.request.user.id, '\n\n', sep='\n')
-    #     serializer.save(ad=ad_id,
-    #                     commentator=self.request.user.id
-    #                     )
-
-    def post(self, request, pk):
-        new_comment = Comment.objects.create(content=request.data['content'],
-                                             ad_id=pk,
-                                             commentator_id=request.user.id)
-        return Response({'post': CommentSerializer(new_comment).data})
+    def create(self, request, *args, **kwargs):
+        print(self.kwargs)
+        request.data['commentator'] = self.request.user.id
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
 class RetrieveCommentAPI(generics.RetrieveUpdateDestroyAPIView):
@@ -94,7 +90,7 @@ class RetrieveCommentAPI(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (IsCurrentUserOrReadOnly,)
 
 
-class ApplicationAPIView(generics.ListAPIView):
+class ApplicationAPIView(generics.ListCreateAPIView):
     """
     вывод списка заявлений у определенного объявления
     """
@@ -104,17 +100,28 @@ class ApplicationAPIView(generics.ListAPIView):
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = ApplicationFilter
 
+    def create(self, request, *args, **kwargs):
+        request.data['applicant'] = request.user.id
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED,
+                        headers=headers)
 
-class CreateApplicationAPIView(APIView):
-    """
-    создание нового заявления
-    """
 
-    def post(self, request, pk_ann):
-        new_application = Application.objects.create(comment=request.data['comment'],
-                                                     ad_id=pk_ann,
-                                                     applicant_id=request.user.id)
-        return Response({'post': ApplicationSerializer(new_application).data})
+# class CreateApplicationAPIView(APIView):
+#     """
+#     создание нового заявления
+#     """
+#     serializer_class = ApplicationSerializer
+#
+#     def post(self, request, pk_ann):
+#         new_application = Application.objects.create(
+#             comment=request.data['comment'],
+#             ad_id=pk_ann,
+#             applicant_id=request.user.id)
+#         return Response({'post': ApplicationSerializer(new_application).data})
 
 
 class ConfirmApplicationAPIView(generics.UpdateAPIView):
@@ -124,6 +131,9 @@ class ConfirmApplicationAPIView(generics.UpdateAPIView):
     queryset = Application.objects.all()
     serializer_class = ApplicationSerializer
     permission_classes = (IsCurrentUser,)
+
+    def perform_update(self, serializer):
+        serializer.save()
 
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
