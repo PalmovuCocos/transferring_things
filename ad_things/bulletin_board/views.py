@@ -72,13 +72,12 @@ class CommentAPIView(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         recipient = Announcement.objects.get(pk=self.request.data["ad"])
-        print(recipient.announcer.email)
         send_mail(
             "Доска объявлений",
             f'Под Вашим объявлением {self.request.data["ad"]} '
             f'был оставлен комментарий',
-            self.request.user.email,
-            [self.request.user.email],
+            "",
+            [recipient.announcer.email],
             fail_silently=False,
         )
         serializer.save()
