@@ -29,6 +29,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
+    commentator = serializers.CharField(default=serializers.CurrentUserDefault())
 
     class Meta:
         model = Comment

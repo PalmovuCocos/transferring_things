@@ -69,16 +69,6 @@ class CommentAPIView(generics.ListCreateAPIView):
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = CommentFilter
 
-    def create(self, request, *args, **kwargs):
-        request.data['commentator'] = self.request.user.id
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data,
-                        status=status.HTTP_201_CREATED,
-                        headers=headers)
-
 
 class CommentRUDAPIView(generics.RetrieveUpdateDestroyAPIView):
     """
@@ -93,6 +83,7 @@ class CommentRUDAPIView(generics.RetrieveUpdateDestroyAPIView):
 class ApplicationAPIView(generics.ListCreateAPIView):
     """
     вывод списка заявлений у определенного объявления
+    и добавление нового объявления
     """
     queryset = Application.objects.all()
     permission_classes = (IsCurrentUser,)
