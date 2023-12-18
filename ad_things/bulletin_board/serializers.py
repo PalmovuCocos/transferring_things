@@ -4,6 +4,9 @@ from .models import Announcement, Category, Application, Comment
 
 
 class AnnouncementSerializer(serializers.ModelSerializer):
+    announcer = serializers.CharField(
+        default=serializers.CurrentUserDefault())
+
     class Meta:
         model = Announcement
         fields = "__all__"
@@ -16,7 +19,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class ApplicationSerializer(serializers.ModelSerializer):
-    # applicant = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    applicant = serializers.CharField(default=serializers.CurrentUserDefault())
 
     class Meta:
         model = Application
