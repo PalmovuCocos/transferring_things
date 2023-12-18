@@ -1,3 +1,4 @@
+from django.core.mail import send_mail
 from rest_framework import generics, status
 from rest_framework.response import Response
 
@@ -68,6 +69,17 @@ class CommentAPIView(generics.ListCreateAPIView):
     serializer_class = CommentSerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = CommentFilter
+
+    def perform_create(self, serializer):
+        send_mail(
+            "Доска объявлений",
+            f'Под Вашим объявлением {self.request.data["ad"]} '
+            f'был оставлен комментарий',
+            'cocos.barchuck@yandex.ru',
+            ['oleg.fisenko2013@yandex.ru'],
+            fail_silently=False,
+        )
+        serializer.save()
 
 
 class CommentRUDAPIView(generics.RetrieveUpdateDestroyAPIView):
