@@ -3,17 +3,12 @@ services:
     build: .
     container_name: django
     command: bash -c "python manage.py migrate --noinput &&
-             python manage.py runserver 0.0.0.0:8000 --settings=ad_things.settings"
+             python manage.py runserver 0.0.0.0:8000"
 
-    # место куда данные сохраняются за пределами контейнера
     volumes:
       - .:/usr/src/transferring_things/
     ports:
       - 8000:8000
-    environment:
-      - POSTGRES_DB=transferring_things
-      - POSTGRES_USER=dmitry
-      - POSTGRES_PASSWORD=4221
     depends_on:
       - pgdb
     env_file:
@@ -21,10 +16,6 @@ services:
 
   pgdb:
     image: postgres
-    environment:
-      - POSTGRES_DB=transferring_things
-      - POSTGRES_USER=dmitry
-      - POSTGRES_PASSWORD=4221
     container_name: pgdb
     volumes:
       - pg_data:/var/lib/postgresql/data

@@ -1,7 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 from .models import Announcement, Category, Application, Comment
-from django.core.mail import send_mail
 
 
 class AnnouncementSerializer(serializers.ModelSerializer):

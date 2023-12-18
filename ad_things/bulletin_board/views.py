@@ -1,6 +1,5 @@
 from rest_framework import generics, status
 from rest_framework.response import Response
-from rest_framework.views import APIView
 
 from .filters import AnnouncementCategoryFilter, CommentFilter, \
     ApplicationFilter
@@ -28,7 +27,17 @@ class AnnouncementAPIView(generics.ListCreateAPIView):
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
 
-class CreateCategoryAPIView(generics.ListCreateAPIView):
+class AnnouncementRUDAPIView(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Вывод одной записи Announcement.
+    Если пользователь - создатель записи, то можно изменять и удалять
+    """
+    queryset = Announcement.objects.all()
+    serializer_class = AnnouncementSerializer
+    permission_classes = (IsCurrentUserOrReadOnly,)
+
+
+class CategoryAPIView(generics.ListCreateAPIView):
     """
     Вывод и создание категорий для авторизированных пользователей
     """
@@ -49,20 +58,10 @@ class AnnouncementCategoryAPIView(generics.ListAPIView):
     filterset_class = AnnouncementCategoryFilter
 
 
-class RetrieveAnnouncementAPI(generics.RetrieveUpdateDestroyAPIView):
-    """
-    Вывод одной записи Announcement.
-    Если пользователь - создатель записи, то можно изменять и удалять
-    """
-    queryset = Announcement.objects.all()
-    serializer_class = AnnouncementSerializer
-    permission_classes = (IsCurrentUserOrReadOnly,)
-
-
 class CommentAPIView(generics.ListCreateAPIView):
     """
     Вывод всех комментариев для отдельного объявления (или для всех)
-    и создание комментариев для отдельного объявления
+    и создание новых комментариев
     """
     queryset = Comment.objects.all()
     permission_classes = (IsAuthenticatedOrReadOnly,)
@@ -71,16 +70,17 @@ class CommentAPIView(generics.ListCreateAPIView):
     filterset_class = CommentFilter
 
     def create(self, request, *args, **kwargs):
-        print(self.kwargs)
         request.data['commentator'] = self.request.user.id
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        return Response(serializer.data,
+                        status=status.HTTP_201_CREATED,
+                        headers=headers)
 
 
-class RetrieveCommentAPI(generics.RetrieveUpdateDestroyAPIView):
+class CommentRUDAPIView(generics.RetrieveUpdateDestroyAPIView):
     """
     вывод отдельного комментария, а также
     изменение и удаление если создатель комментария текущий пользователь
@@ -110,20 +110,6 @@ class ApplicationAPIView(generics.ListCreateAPIView):
                         headers=headers)
 
 
-# class CreateApplicationAPIView(APIView):
-#     """
-#     создание нового заявления
-#     """
-#     serializer_class = ApplicationSerializer
-#
-#     def post(self, request, pk_ann):
-#         new_application = Application.objects.create(
-#             comment=request.data['comment'],
-#             ad_id=pk_ann,
-#             applicant_id=request.user.id)
-#         return Response({'post': ApplicationSerializer(new_application).data})
-
-
 class ConfirmApplicationAPIView(generics.UpdateAPIView):
     """
     изменение статуса заявления создателем объявления
@@ -131,9 +117,6 @@ class ConfirmApplicationAPIView(generics.UpdateAPIView):
     queryset = Application.objects.all()
     serializer_class = ApplicationSerializer
     permission_classes = (IsCurrentUser,)
-
-    def perform_update(self, serializer):
-        serializer.save()
 
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
