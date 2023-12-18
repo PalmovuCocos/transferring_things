@@ -33,7 +33,7 @@ urlpatterns = [
     # проверка
     path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
 
-    path('api/register', RegisterAPI.as_view()),
+    path('api/register/', RegisterAPI.as_view()),
 
     path('swagger<format>/', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
