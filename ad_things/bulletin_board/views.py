@@ -104,6 +104,18 @@ class ApplicationAPIView(generics.ListCreateAPIView):
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = ApplicationFilter
 
+    def perform_create(self, serializer):
+        recipient = Announcement.objects.get(pk=self.request.data["ad"])
+        send_mail(
+            "Доска объявлений",
+            f'На Ваше объявление {self.request.data["ad"]} '
+            f'откликнулись!',
+            "",
+            [recipient.announcer.email],
+            fail_silently=False,
+        )
+        serializer.save()
+
 
 class ConfirmApplicationAPIView(generics.UpdateAPIView):
     """
