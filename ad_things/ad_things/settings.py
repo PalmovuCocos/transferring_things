@@ -31,6 +31,12 @@ EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
 DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL")
 DEFAULT_TO_EMAIL = config("DEFAULT_TO_EMAIL")
 
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "unique-snowflake",
+    }
+}
 
 INSTALLED_APPS = [
     'django.contrib.admin',
