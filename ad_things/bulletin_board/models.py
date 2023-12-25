@@ -9,6 +9,9 @@ class Category(models.Model):
         verbose_name_plural = 'Категории'
         verbose_name = 'Категория'
 
+    def __str__(self):
+        return self.category_name
+
 
 class Announcement(models.Model):
     announcer = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name='Объявитель')

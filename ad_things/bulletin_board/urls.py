@@ -19,4 +19,3 @@ urlpatterns = [
     path('api/announcement/confirm_application/<int:pk>/',
          ConfirmApplicationAPIView.as_view()),
 ]
-
