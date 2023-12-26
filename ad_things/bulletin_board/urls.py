@@ -1,9 +1,10 @@
 from django.urls import path
+from django.views.decorators.cache import cache_page
 
 from .views import *
 
 urlpatterns = [
-    path('api/announcements/', AnnouncementAPIView.as_view()),
+    path('api/announcements/', cache_page(60*5)(AnnouncementAPIView.as_view())),
     path('api/announcements/<int:pk>/', AnnouncementRUDAPIView.as_view()),
 
     path('api/categories/', CategoryAPIView.as_view()),
