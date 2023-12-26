@@ -1,5 +1,5 @@
 from django.core.mail import send_mail
-from rest_framework import generics, status
+from rest_framework import generics, status, viewsets
 from rest_framework.response import Response
 
 from .filters import AnnouncementCategoryFilter, CommentFilter, \
@@ -19,23 +19,35 @@ from .permissions import (IsAuthenticatedOrReadOnly,
 from django_filters import rest_framework as filters
 
 
-class AnnouncementAPIView(generics.ListCreateAPIView):
-    """
-    Вывод всех объявлений и создание объявления
-    """
-    queryset = Announcement.objects.all()
+class AnnouncementViewSet(viewsets.ModelViewSet):
     serializer_class = AnnouncementSerializer
-    permission_classes = (IsAuthenticatedOrReadOnly,)
+    queryset = Announcement.objects.all()
+
+    def get_permissions(self):
+        if self.action in ('create', 'list'):
+            permission_classes = [IsAuthenticatedOrReadOnly]
+        else:
+            permission_classes = [IsCurrentUserOrReadOnly]
+        return [permission() for permission in permission_classes]
 
 
-class AnnouncementRUDAPIView(generics.RetrieveUpdateDestroyAPIView):
-    """
-    Вывод одной записи Announcement.
-    Если пользователь - создатель записи, то можно изменять и удалять
-    """
-    queryset = Announcement.objects.all()
-    serializer_class = AnnouncementSerializer
-    permission_classes = (IsCurrentUserOrReadOnly,)
+# class AnnouncementAPIView(generics.ListCreateAPIView):
+#     """
+#     Вывод всех объявлений и создание объявления
+#     """
+#     queryset = Announcement.objects.all()
+#     serializer_class = AnnouncementSerializer
+#     permission_classes = (IsAuthenticatedOrReadOnly,)
+#
+#
+# class AnnouncementRUDAPIView(generics.RetrieveUpdateDestroyAPIView):
+#     """
+#     Вывод одной записи Announcement.
+#     Если пользователь - создатель записи, то можно изменять и удалять
+#     """
+#     queryset = Announcement.objects.all()
+#     serializer_class = AnnouncementSerializer
+#     permission_classes = (IsCurrentUserOrReadOnly,)
 
 
 class CategoryAPIView(generics.ListCreateAPIView):
