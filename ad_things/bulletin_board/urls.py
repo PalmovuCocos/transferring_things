@@ -6,7 +6,7 @@ from .views import *
 
 router = DefaultRouter()
 router.register(r'announcements', AnnouncementViewSet, basename='announcements')
-print(router.urls)
+print(router.urls, 1)
 
 urlpatterns = [
     path('api/announcements/',

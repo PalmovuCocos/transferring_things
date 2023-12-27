@@ -20,6 +20,11 @@ from django_filters import rest_framework as filters
 
 
 class AnnouncementViewSet(viewsets.ModelViewSet):
+    """
+    Вывод всех и одного объявлений и создание объявления
+    Если пользователь - создатель записи, то можно изменять и удалять
+    """
+
     serializer_class = AnnouncementSerializer
     queryset = Announcement.objects.all()
 
@@ -29,25 +34,6 @@ class AnnouncementViewSet(viewsets.ModelViewSet):
         else:
             permission_classes = [IsCurrentUserOrReadOnly]
         return [permission() for permission in permission_classes]
-
-
-# class AnnouncementAPIView(generics.ListCreateAPIView):
-#     """
-#     Вывод всех объявлений и создание объявления
-#     """
-#     queryset = Announcement.objects.all()
-#     serializer_class = AnnouncementSerializer
-#     permission_classes = (IsAuthenticatedOrReadOnly,)
-#
-#
-# class AnnouncementRUDAPIView(generics.RetrieveUpdateDestroyAPIView):
-#     """
-#     Вывод одной записи Announcement.
-#     Если пользователь - создатель записи, то можно изменять и удалять
-#     """
-#     queryset = Announcement.objects.all()
-#     serializer_class = AnnouncementSerializer
-#     permission_classes = (IsCurrentUserOrReadOnly,)
 
 
 class CategoryAPIView(generics.ListCreateAPIView):

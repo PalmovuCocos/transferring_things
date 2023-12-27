@@ -6,11 +6,16 @@ admin.site.site_header = 'Доска объявлений'
 
 @admin.register(Announcement)
 class AnnouncementAdmin(admin.ModelAdmin):
-    list_display = (
-    'id', 'announcer', 'category', 'name_thing', 'description', 'photo')
+    # список полей выводящихся при добавлении записей
+    fields = ['announcer', 'category', 'name_thing', 'description']
+    list_display = ('id',
+                    'announcer', 'category', 'name_thing',
+                    'description', 'photo')
     list_display_links = ('id', 'name_thing')
-    search_fields = ('category', 'name_thing')
-    ordering = ('name_thing',)
+    search_fields = ['category__category_name', 'name_thing']
+    list_per_page = 10
+    ordering = ('category', 'name_thing')
+    list_filter = ('category', 'announcer')
 
 
 @admin.register(Category)

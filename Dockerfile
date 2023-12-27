@@ -8,7 +8,7 @@ ENV PYTHONUNBUFFERED 1
 # создание рабочей директории
 WORKDIR /usr/src/transferring_things/ad_things
 
-# выполнение команды
+# выполнение командыzzzz
 RUN pip install --upgrade pip
 RUN pip install pipenv
 # копирование и установка requirements
